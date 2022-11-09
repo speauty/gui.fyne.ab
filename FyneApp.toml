@@ -1,0 +1,8 @@
+Website = "https://blog.speauty.cn"
+
+[Details]
+Icon = "gui.fyne.ab.ico"
+Name = "在线AB工具"
+ID = "com.gui.fyne.ab"
+Version = "1.0.0"
+Build = 1
