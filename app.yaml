@@ -1,0 +1,13 @@
+app: # 应用参数
+
+gui:
+  app_name: 应用名称 # 窗体应用名称
+  app_icon_path: facvion.ico # 窗体应用ICON路径
+
+log: # 日志参数
+  key: default
+  level: 6
+  log_file: runtime/logs/app.log
+  log_rotation_time: 0
+  log_max_age: 86400
+  log_rotation_count: 2

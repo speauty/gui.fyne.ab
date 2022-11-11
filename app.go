@@ -1,14 +1,26 @@
 package main
 
 import (
-	"fyne.io/fyne/v2/app"
-	"fyne.io/fyne/v2/widget"
+	"github.com/flopp/go-findfont"
+	"gui.fyne.ab/src/app"
+	"gui.fyne.ab/src/common/cfg"
+	"os"
+	"strings"
 )
 
-func main() {
-	a := app.New()
-	w := a.NewWindow("在线AB工具")
+func init() {
+	fontPaths := findfont.List()
+	fontName := "simkai.ttf"
+	for _, path := range fontPaths {
+		if strings.Contains(path, fontName) {
+			_ = os.Setenv("FYNE_FONT", path)
+			break
+		}
+	}
+}
 
-	w.SetContent(widget.NewLabel("Hello World!"))
-	w.ShowAndRun()
+func main() {
+	cfg.Api().LoadConfig(".")
+
+	new(app.App).Init().Run()
 }

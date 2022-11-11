@@ -26,3 +26,7 @@ release:
 
 compress: # 必须安装upx服务, 否则该指令无法使用
 	cd ${DirProjectBin} && upx -9 *.exe
+
+# 生成syso文件
+genSyso:
+	windres -o gui.fyne.ab.syso gui.fyne.ab.rc
