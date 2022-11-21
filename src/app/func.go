@@ -12,6 +12,7 @@ func genWindow() *gui.AppWindow {
 	MainWindow.RegisterPages(page.ApiTestPage().Init(MainWindow))
 	MainWindow.RegisterPages(page.ApiEmptyPage().Init(MainWindow))
 	MainWindow.RegisterPages(page.ApiErrorPage().Init(MainWindow))
+	MainWindow.RegisterPages(page.ApiEnvPage().Init(MainWindow))
 
 	return MainWindow
 }
@@ -20,6 +21,9 @@ func genMenu() *fyne.MainMenu {
 	mainMenu := fyne.NewMainMenu(
 		fyne.NewMenu(
 			"菜单",
+			fyne.NewMenuItem("环境", func() {
+				go LogAppApi().Infoln("点击菜单: 菜单-环境")
+			}),
 			fyne.NewMenuItem("设置", func() {
 				go LogAppApi().Infoln("点击菜单: 菜单-设置")
 			}),
