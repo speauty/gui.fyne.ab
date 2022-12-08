@@ -27,11 +27,11 @@ type EnvPage struct {
 }
 
 func (tp *EnvPage) Init(window *gui.AppWindow) gui.IPage {
-	tp.window = window
-	tp.id = snowman.NewSnowApi().GetIdInt64()
-	tp.name = "环境"
-	tp.flagIsError = false
-	tp.flagIsStart = false
+	tp.Window = window
+	tp.Id = snowman.NewSnowApi().GetIdInt64()
+	tp.Name = "环境"
+	tp.FlagIsError = false
+	tp.FlagIsStart = false
 
 	return tp
 }

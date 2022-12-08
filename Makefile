@@ -1,7 +1,7 @@
 # Windows版
 
 # 项目根目录
-DirProjectRoot = E:\speauty\projects\github.com\speauty\gui.fyne.ab
+DirProjectRoot = E:\MonkeyCode\github.com\speauty\gui.fyne.ab
 # 可执行文件目录
 DirProjectBin = ${DirProjectRoot}\bin
 # 源码目录

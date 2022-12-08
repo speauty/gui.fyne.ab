@@ -34,11 +34,11 @@ type ABPage struct {
 }
 
 func (ap *ABPage) Init(window *gui.AppWindow) gui.IPage {
-	ap.window = window
-	ap.id = snowman.NewSnowApi().GetIdInt64()
-	ap.name = "AB压测"
-	ap.flagIsError = false
-	ap.flagIsStart = false
+	ap.Window = window
+	ap.Id = snowman.NewSnowApi().GetIdInt64()
+	ap.Name = "AB压测"
+	ap.FlagIsError = false
+	ap.FlagIsStart = false
 	ap.exePath = filepath.Join(gui.GetRuntimeDir(), "ab.exe")
 
 	return ap
@@ -48,6 +48,7 @@ func (ap *ABPage) GenCanvasObject() fyne.CanvasObject {
 
 	itemTargetLink := new(widget.FormItem)
 	itemTargetLinkEntry := widget.NewEntry()
+	itemTargetLinkEntry.SetText("http://www.baidu.com/")
 	itemTargetLinkEntry.Validator = func(val string) error {
 		if val == "" {
 			return fmt.Errorf("请输入目标链接地址")
@@ -60,7 +61,7 @@ func (ap *ABPage) GenCanvasObject() fyne.CanvasObject {
 
 	itemCntRequest := new(widget.FormItem)
 	itemCntRequestEntry := widget.NewEntry()
-	itemCntRequestEntry.SetText("10")
+	itemCntRequestEntry.SetText("1")
 	itemCntRequestEntry.Validator = func(val string) error {
 		if val == "" {
 			return fmt.Errorf("请输入总请求数")
@@ -77,6 +78,44 @@ func (ap *ABPage) GenCanvasObject() fyne.CanvasObject {
 	itemCntRequest.Text = "总请求数"
 	itemCntRequest.Widget = itemCntRequestEntry
 
+	itemCntParallel := new(widget.FormItem)
+	itemCntParallelEntry := widget.NewEntry()
+	itemCntParallelEntry.SetText("1")
+	itemCntParallelEntry.Validator = func(val string) error {
+		if val == "" {
+			return fmt.Errorf("请输入并发数量")
+		}
+		numParsed, err := strconv.Atoi(val)
+		if err != nil {
+			return fmt.Errorf("并发数量解析异常, 错误: %s", err.Error())
+		}
+		if strconv.Itoa(numParsed) != val {
+			return fmt.Errorf("并发数量解析不一致, 输入值: %s, 解析值: %s", val, strconv.Itoa(numParsed))
+		}
+		return nil
+	}
+	itemCntParallel.Text = "并发数量"
+	itemCntParallel.Widget = itemCntParallelEntry
+
+	itemTimeExecuted := new(widget.FormItem)
+	itemTimeExecutedEntry := widget.NewEntry()
+	itemTimeExecutedEntry.SetText("50000")
+	itemTimeExecutedEntry.Validator = func(val string) error {
+		if val == "" {
+			return fmt.Errorf("请输入运行时间")
+		}
+		numParsed, err := strconv.Atoi(val)
+		if err != nil {
+			return fmt.Errorf("运行时间解析异常, 错误: %s", err.Error())
+		}
+		if strconv.Itoa(numParsed) != val {
+			return fmt.Errorf("运行时间解析不一致, 输入值: %s, 解析值: %s", val, strconv.Itoa(numParsed))
+		}
+		return nil
+	}
+	itemTimeExecuted.Text = "运行时间(s)"
+	itemTimeExecuted.Widget = itemTimeExecutedEntry
+
 	strRes := ""
 	dataRes := binding.BindString(&strRes)
 	dataScreen := widget.NewLabelWithData(dataRes)
@@ -87,27 +126,38 @@ func (ap *ABPage) GenCanvasObject() fyne.CanvasObject {
 	mainForm.OnSubmit = func() {
 		_ = dataRes.Set("")
 		var args []string
-		args = append(args, "-n", itemCntRequestEntry.Text)
+		if itemCntRequestEntry.Text != "" {
+			args = append(args, "-n", itemCntRequestEntry.Text)
+		}
+		if itemCntParallelEntry.Text != "" {
+			args = append(args, "-c", itemCntParallelEntry.Text)
+		}
+		if itemTimeExecutedEntry.Text != "" {
+			args = append(args, "-t", itemTimeExecutedEntry.Text)
+		}
 		args = append(args, itemTargetLinkEntry.Text)
 		cmd := exec.Command(ap.exePath, args...)
 		var out bytes.Buffer
 		cmd.Stdout = &out
 		err := cmd.Run()
 		if err != nil {
-			gui.Error(err, ap.window.GetWindow())
+			fmt.Println(cmd.Args)
+			gui.Error(err, ap.Window.GetWindow())
 		}
 		_ = dataRes.Set(out.String())
 		return
 	}
 	mainForm.OnCancel = func() {
-		itemTargetLinkEntry.SetText("")
-		itemCntRequestEntry.SetText("10")
+		itemTargetLinkEntry.SetText("http://www.baidu.com/")
+		itemCntRequestEntry.SetText("1")
+		itemCntParallelEntry.SetText("1")
+		itemTimeExecutedEntry.SetText("50000")
 		_ = dataRes.Set("")
 	}
-	mainForm.Items = append(mainForm.Items, itemTargetLink, itemCntRequest)
-	windowSize := ap.window.GetWindow().Content().Size()
+	mainForm.Items = append(mainForm.Items, itemTargetLink, itemCntRequest, itemCntParallel, itemTimeExecuted)
+	windowSize := ap.Window.GetWindow().Content().Size()
 	return container.NewHBox(
-		container.New(layout.NewGridWrapLayout(fyne.NewSize(windowSize.Width*0.6, windowSize.Height)), container.NewMax(container.NewHScroll(mainForm))),
-		container.New(layout.NewGridWrapLayout(fyne.NewSize(windowSize.Width-windowSize.Width*0.3, windowSize.Height)), container.NewMax(container.NewScroll(dataScreen))),
+		container.New(layout.NewGridWrapLayout(fyne.NewSize(windowSize.Width*0.65, windowSize.Height)), container.NewMax(container.NewHScroll(mainForm))),
+		container.New(layout.NewGridWrapLayout(fyne.NewSize(windowSize.Width-windowSize.Width*0.65, windowSize.Height)), container.NewMax(container.NewScroll(dataScreen))),
 	)
 }

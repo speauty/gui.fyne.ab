@@ -17,7 +17,9 @@ type AppWindow struct {
 	flagIsMainWindow bool   // 是否是主窗口
 	flagFixedSize    bool   // 是否固定尺寸
 	flagIsRendering  bool   // 是否正在渲染
+	flagForceRefresh bool   // 强制刷新
 	currentPageId    int64
+	toPageId         int64
 	pages            sync.Map
 }
 
@@ -29,7 +31,9 @@ func (aw *AppWindow) NewWindow(gui *AppGui, windowName string, isMain bool, isFi
 	aw.flagIsMainWindow = isMain
 	aw.flagFixedSize = isFixedSize
 	aw.flagIsRendering = false
+	aw.flagForceRefresh = false
 	aw.currentPageId = 0
+	aw.toPageId = 0
 	aw.setWindow()
 	return aw
 }
@@ -52,7 +56,6 @@ func (aw *AppWindow) OnRender() {
 			if aw.flagIsRendering { // swap-buffers
 				aw.window.Content().Refresh()
 				aw.flagIsRendering = false
-				aw.currentPageId = 0
 			}
 		}
 	}()
@@ -65,9 +68,12 @@ func (aw *AppWindow) OnRender() {
 
 func (aw *AppWindow) OnUpdate() {
 	aw.pages.Range(func(pageId, page any) bool {
-		if pageId == aw.currentPageId {
+		if (pageId != aw.currentPageId && pageId == aw.toPageId) || aw.flagForceRefresh {
 			aw.SetContent(page.(IPage).GenCanvasObject())
+			aw.currentPageId = pageId.(int64)
 			aw.flagIsRendering = true
+			aw.flagForceRefresh = false
+
 			fmt.Println(fmt.Sprintf("[%s]窗口[%s]准备载入页面[%s]", now(), aw.GetWindowName(), page.(IPage).GetName()))
 			return false
 		}
@@ -79,7 +85,7 @@ func (aw *AppWindow) RegisterPages(pages ...IPage) {
 	for _, page := range pages { // @todo 不判断重复插入之类的
 		aw.pages.Store(page.GetId(), page)
 		if page.FlagIsStartPage() {
-			aw.SetCurrentPageId(page.GetId())
+			aw.LoadPage(page.GetId())
 		}
 		fmt.Println(fmt.Sprintf(
 			"[%s]页面[Name: %s]在窗口[%s]注册: 成功", now(), page.GetName(), aw.GetWindowName(),
@@ -97,9 +103,13 @@ func (aw *AppWindow) SetMainMenu(mainMenu *fyne.MainMenu) {
 	aw.window.SetMainMenu(mainMenu)
 }
 
-// SetCurrentPageId 设置加载页面ID
-func (aw *AppWindow) SetCurrentPageId(pageId int64) {
-	aw.currentPageId = pageId
+// LoadPage 设置加载页面ID
+func (aw *AppWindow) LoadPage(pageId int64) {
+	aw.toPageId = pageId
+}
+
+func (aw *AppWindow) ForceRefresh() {
+	aw.flagForceRefresh = true
 }
 
 // SetCloseFunc 设置关闭处理句柄
@@ -116,7 +126,7 @@ func (aw *AppWindow) setWindow() {
 			aw.windowName = aw.gui.GetCfg().AppName
 		}
 		aw.window = app.NewWindow(aw.windowName)
-		aw.window.Resize(fyne.NewSize(1024, 768))
+		aw.window.Resize(fyne.NewSize(800, 600))
 		aw.window.SetFixedSize(aw.flagFixedSize) // 设置是否固定尺寸, 按理说应该放在主窗口判断内的, 但为了避免窗口子窗口之类的情况
 		if aw.flagIsMainWindow {                 // 主窗口配置
 			aw.window.SetMaster()

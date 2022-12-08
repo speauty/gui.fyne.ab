@@ -5,17 +5,17 @@ import (
 )
 
 type BasePage struct {
-	id          int64
-	name        string
-	flagIsError bool
-	flagIsStart bool
-	window      *gui.AppWindow
+	Id          int64
+	Name        string
+	FlagIsError bool
+	FlagIsStart bool
+	Window      *gui.AppWindow
 }
 
-func (basePage *BasePage) GetId() int64 { return basePage.id }
+func (basePage *BasePage) GetId() int64 { return basePage.Id }
 
-func (basePage *BasePage) GetName() string { return basePage.name }
+func (basePage *BasePage) GetName() string { return basePage.Name }
 
-func (basePage *BasePage) FlagIsErrorPage() bool { return basePage.flagIsError }
+func (basePage *BasePage) FlagIsErrorPage() bool { return basePage.FlagIsError }
 
-func (basePage *BasePage) FlagIsStartPage() bool { return basePage.flagIsStart }
+func (basePage *BasePage) FlagIsStartPage() bool { return basePage.FlagIsStart }

@@ -27,10 +27,10 @@ type ErrorPage struct {
 }
 
 func (errorPage *ErrorPage) Init(window *gui.AppWindow) gui.IPage {
-	errorPage.window = window
-	errorPage.id = snowman.NewSnowApi().GetIdInt64()
-	errorPage.name = "错误页面"
-	errorPage.flagIsError = true
+	errorPage.Window = window
+	errorPage.Id = snowman.NewSnowApi().GetIdInt64()
+	errorPage.Name = "错误页面"
+	errorPage.FlagIsError = true
 	return errorPage
 }
 

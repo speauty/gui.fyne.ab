@@ -9,8 +9,6 @@ import (
 func genWindow() *gui.AppWindow {
 	MainWindow.SetMainMenu(genMenu())
 
-	MainWindow.RegisterPages(page.ApiTestPage().Init(MainWindow))
-	MainWindow.RegisterPages(page.ApiEmptyPage().Init(MainWindow))
 	MainWindow.RegisterPages(page.ApiErrorPage().Init(MainWindow))
 	MainWindow.RegisterPages(page.ApiEnvPage().Init(MainWindow))
 	MainWindow.RegisterPages(page.ApiABPage().Init(MainWindow))
@@ -33,31 +31,14 @@ func genMenu() *fyne.MainMenu {
 			"服务",
 			fyne.NewMenuItem("AB压测", func() {
 				go LogAppApi().Infoln("点击菜单: 服务-AB压测")
-				MainWindow.SetCurrentPageId(page.ApiABPage().GetId())
-			}),
-		),
-		fyne.NewMenu(
-			"帮助",
-			fyne.NewMenuItem("检测版本", func() {
-				go LogAppApi().Infoln("点击菜单: 帮助-检测版本")
-			}),
-			fyne.NewMenuItem("关于应用", func() {
-				go LogAppApi().Infoln("点击菜单: 帮助-关于应用")
+				MainWindow.LoadPage(page.ApiABPage().GetId())
 			}),
 		),
 		fyne.NewMenu(
 			"页面",
-			fyne.NewMenuItem("测试页面", func() {
-				go LogAppApi().Infoln("点击菜单: 页面-测试页面")
-				MainWindow.SetCurrentPageId(page.ApiTestPage().GetId())
-			}),
-			fyne.NewMenuItem("空白页面", func() {
-				go LogAppApi().Infoln("点击菜单: 页面-空白页面")
-				MainWindow.SetCurrentPageId(page.ApiEmptyPage().GetId())
-			}),
 			fyne.NewMenuItem("错误页面", func() {
 				go LogAppApi().Infoln("点击菜单: 页面-错误页面")
-				MainWindow.SetCurrentPageId(page.ApiErrorPage().GetId())
+				MainWindow.LoadPage(page.ApiErrorPage().GetId())
 			}),
 		),
 	)
