@@ -6,9 +6,9 @@ import (
 	"fyne.io/fyne/v2/container"
 	"fyne.io/fyne/v2/layout"
 	"fyne.io/fyne/v2/theme"
+	"gui.fyne.ab/src/common/snowman"
 	"gui.fyne.ab/src/core/gui"
 	"image/color"
-	"math/rand"
 	"sync"
 )
 
@@ -30,7 +30,7 @@ type TestPage struct {
 
 func (tp *TestPage) Init(window *gui.AppWindow) gui.IPage {
 	tp.window = window
-	tp.id = rand.Int63()
+	tp.id = snowman.NewSnowApi().GetIdInt64()
 	tp.name = "测试页面"
 	tp.flagIsError = false
 	tp.flagIsStart = true

@@ -4,6 +4,7 @@ go 1.19
 
 require (
 	fyne.io/fyne/v2 v2.2.3
+	github.com/bwmarrin/snowflake v0.3.0
 	github.com/flopp/go-findfont v0.1.0
 	github.com/lestrrat-go/file-rotatelogs v2.4.0+incompatible
 	github.com/sirupsen/logrus v1.8.1

@@ -4,8 +4,8 @@ import (
 	"fyne.io/fyne/v2"
 	"fyne.io/fyne/v2/container"
 	"fyne.io/fyne/v2/layout"
+	"gui.fyne.ab/src/common/snowman"
 	"gui.fyne.ab/src/core/gui"
-	"math/rand"
 	"sync"
 )
 
@@ -27,7 +27,7 @@ type EmptyPage struct {
 
 func (tp *EmptyPage) Init(window *gui.AppWindow) gui.IPage {
 	tp.window = window
-	tp.id = rand.Int63()
+	tp.id = snowman.NewSnowApi().GetIdInt64()
 	tp.name = "空白页面"
 	tp.flagIsError = false
 	tp.flagIsStart = false

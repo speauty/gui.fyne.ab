@@ -116,7 +116,7 @@ func (aw *AppWindow) setWindow() {
 			aw.windowName = aw.gui.GetCfg().AppName
 		}
 		aw.window = app.NewWindow(aw.windowName)
-		aw.window.Resize(fyne.NewSize(800, 600))
+		aw.window.Resize(fyne.NewSize(1024, 768))
 		aw.window.SetFixedSize(aw.flagFixedSize) // 设置是否固定尺寸, 按理说应该放在主窗口判断内的, 但为了避免窗口子窗口之类的情况
 		if aw.flagIsMainWindow {                 // 主窗口配置
 			aw.window.SetMaster()

@@ -5,8 +5,8 @@ import (
 	"fyne.io/fyne/v2/container"
 	"fyne.io/fyne/v2/layout"
 	"fyne.io/fyne/v2/widget"
+	"gui.fyne.ab/src/common/snowman"
 	"gui.fyne.ab/src/core/gui"
-	"math/rand"
 	"sync"
 )
 
@@ -28,7 +28,7 @@ type ErrorPage struct {
 
 func (errorPage *ErrorPage) Init(window *gui.AppWindow) gui.IPage {
 	errorPage.window = window
-	errorPage.id = rand.Int63()
+	errorPage.id = snowman.NewSnowApi().GetIdInt64()
 	errorPage.name = "错误页面"
 	errorPage.flagIsError = true
 	return errorPage

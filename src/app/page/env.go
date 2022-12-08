@@ -5,8 +5,8 @@ import (
 	"fyne.io/fyne/v2/container"
 	"fyne.io/fyne/v2/layout"
 	"fyne.io/fyne/v2/widget"
+	"gui.fyne.ab/src/common/snowman"
 	"gui.fyne.ab/src/core/gui"
-	"math/rand"
 	"sync"
 )
 
@@ -28,7 +28,7 @@ type EnvPage struct {
 
 func (tp *EnvPage) Init(window *gui.AppWindow) gui.IPage {
 	tp.window = window
-	tp.id = rand.Int63()
+	tp.id = snowman.NewSnowApi().GetIdInt64()
 	tp.name = "环境"
 	tp.flagIsError = false
 	tp.flagIsStart = false

@@ -13,6 +13,7 @@ func genWindow() *gui.AppWindow {
 	MainWindow.RegisterPages(page.ApiEmptyPage().Init(MainWindow))
 	MainWindow.RegisterPages(page.ApiErrorPage().Init(MainWindow))
 	MainWindow.RegisterPages(page.ApiEnvPage().Init(MainWindow))
+	MainWindow.RegisterPages(page.ApiABPage().Init(MainWindow))
 
 	return MainWindow
 }
@@ -30,8 +31,9 @@ func genMenu() *fyne.MainMenu {
 		),
 		fyne.NewMenu(
 			"服务",
-			fyne.NewMenuItem("上门采样", func() {
-				go LogAppApi().Infoln("点击菜单: 服务-上门采样")
+			fyne.NewMenuItem("AB压测", func() {
+				go LogAppApi().Infoln("点击菜单: 服务-AB压测")
+				MainWindow.SetCurrentPageId(page.ApiABPage().GetId())
 			}),
 		),
 		fyne.NewMenu(
