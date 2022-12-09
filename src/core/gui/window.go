@@ -50,7 +50,7 @@ func (aw *AppWindow) OpStartRender()     { aw.flagIsRendering = true }
 
 func (aw *AppWindow) OnRender() {
 	go func() {
-		for true {
+		for {
 			aw.OnUpdate() // 更新
 
 			if aw.flagIsRendering { // swap-buffers
@@ -96,11 +96,6 @@ func (aw *AppWindow) RegisterPages(pages ...IPage) {
 // SetContent 设置内容
 func (aw *AppWindow) SetContent(canvasObj fyne.CanvasObject) {
 	aw.window.SetContent(canvasObj)
-}
-
-// SetMainMenu 设置主菜单
-func (aw *AppWindow) SetMainMenu(mainMenu *fyne.MainMenu) {
-	aw.window.SetMainMenu(mainMenu)
 }
 
 // LoadPage 设置加载页面ID

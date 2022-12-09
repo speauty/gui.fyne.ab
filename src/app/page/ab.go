@@ -38,14 +38,13 @@ func (ap *ABPage) Init(window *gui.AppWindow) gui.IPage {
 	ap.Id = snowman.NewSnowApi().GetIdInt64()
 	ap.Name = "AB压测"
 	ap.FlagIsError = false
-	ap.FlagIsStart = false
+	ap.FlagIsStart = true
 	ap.exePath = filepath.Join(gui.GetRuntimeDir(), "ab.exe")
 
 	return ap
 }
 
 func (ap *ABPage) GenCanvasObject() fyne.CanvasObject {
-
 	itemTargetLink := new(widget.FormItem)
 	itemTargetLinkEntry := widget.NewEntry()
 	itemTargetLinkEntry.SetText("http://www.baidu.com/")
@@ -60,8 +59,10 @@ func (ap *ABPage) GenCanvasObject() fyne.CanvasObject {
 	itemTargetLink.Widget = itemTargetLinkEntry
 
 	itemCntRequest := new(widget.FormItem)
+
 	itemCntRequestEntry := widget.NewEntry()
 	itemCntRequestEntry.SetText("1")
+	itemCntRequestEntry.Resize(fyne.NewSize(80, 40))
 	itemCntRequestEntry.Validator = func(val string) error {
 		if val == "" {
 			return fmt.Errorf("请输入总请求数")
@@ -99,7 +100,7 @@ func (ap *ABPage) GenCanvasObject() fyne.CanvasObject {
 
 	itemTimeExecuted := new(widget.FormItem)
 	itemTimeExecutedEntry := widget.NewEntry()
-	itemTimeExecutedEntry.SetText("50000")
+	itemTimeExecutedEntry.SetText("10")
 	itemTimeExecutedEntry.Validator = func(val string) error {
 		if val == "" {
 			return fmt.Errorf("请输入运行时间")
@@ -151,13 +152,22 @@ func (ap *ABPage) GenCanvasObject() fyne.CanvasObject {
 		itemTargetLinkEntry.SetText("http://www.baidu.com/")
 		itemCntRequestEntry.SetText("1")
 		itemCntParallelEntry.SetText("1")
-		itemTimeExecutedEntry.SetText("50000")
+		itemTimeExecutedEntry.SetText("10")
 		_ = dataRes.Set("")
 	}
+
 	mainForm.Items = append(mainForm.Items, itemTargetLink, itemCntRequest, itemCntParallel, itemTimeExecuted)
 	windowSize := ap.Window.GetWindow().Content().Size()
-	return container.NewHBox(
-		container.New(layout.NewGridWrapLayout(fyne.NewSize(windowSize.Width*0.65, windowSize.Height)), container.NewMax(container.NewHScroll(mainForm))),
-		container.New(layout.NewGridWrapLayout(fyne.NewSize(windowSize.Width-windowSize.Width*0.65, windowSize.Height)), container.NewMax(container.NewScroll(dataScreen))),
+	if windowSize.Width == 0 {
+		windowSize = fyne.NewSize(800, 600)
+	}
+	return container.NewMax(
+		container.NewVBox(
+			container.New(layout.NewGridWrapLayout(fyne.NewSize(windowSize.Width, windowSize.Height-35)), container.NewMax(container.NewHBox(
+				container.New(layout.NewGridWrapLayout(fyne.NewSize(windowSize.Width*0.65, windowSize.Height-35)), container.NewMax(container.NewHScroll(mainForm))),
+				container.New(layout.NewGridWrapLayout(fyne.NewSize(windowSize.Width-windowSize.Width*0.65, windowSize.Height-35)), container.NewMax(container.NewScroll(dataScreen))),
+			))),
+			container.New(layout.NewGridWrapLayout(fyne.NewSize(windowSize.Width, 35)), container.NewMax(container.NewHScroll(widget.NewLabel("状态栏：fsaf\\n粉红色卡夫卡撒、、\\n核辐射恐慌饭卡")))),
+		),
 	)
 }
